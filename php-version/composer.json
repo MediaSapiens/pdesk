@@ -1,0 +1,7 @@
+{
+    "require": {
+        "twig/twig": "1.*",
+        "kbsali/redmine-api": "dev-master",
+        "slim/slim": "2.*"
+    }
+}
