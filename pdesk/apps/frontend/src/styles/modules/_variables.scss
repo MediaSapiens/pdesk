@@ -1,0 +1,71 @@
+// compass settings
+// legacy support
+$legacy-support-for-ie: false;
+$legacy-support-for-ie8: true;
+$legacy-support-for-mozilla: false;
+$experimental-support-for-opera: false;
+
+// vendor prefixes
+$support-for-original-webkit-gradients: false;
+$experimental-support-for-khtml: false;
+
+
+// global variables
+
+$base-color: #000;
+$base-secondary-color: #666;
+$base-inverse-color: #fff;
+$base-background: #fff;
+$base-accent-color: #ff5f37;
+$base-second-background: #000;
+$base-link-color: #3b9f00;
+$base-link-hover-color: #3b9f00;
+$base-link-active-color: #3b9f00;
+$base-link-visited-color: #2d7a00;
+$base-link-focus-color: #3b9f00;
+
+
+$default-transition-property: all;
+$default-transition-duration: 1s;
+$default-transition-function: false;
+$default-transition-delay: false;
+
+$base-font: 400 16px/2 'PT Sans', Arial, Helvetica, sans-serif;
+$base-title-font: 400 24px/1.5 'PT Sans Narrow', Arial, Helvetica, sans-serif;
+$base-font-family: 'PT Sans', Arial, Helvetica, sans-serif;
+$base-title-font-family: 'PT Sans Narrow', Arial, Helvetica, sans-serif;
+
+
+$accent-color: #ffc61f;
+$accent-color-alt: #ffb502;
+$accent-color-2: #84dc6d;
+$accent-color-2-alt: #72cc5b;
+$scrollbar-color: #9fd4b5;
+
+$promo-page__container-top: 76px;
+$promo-page__container-bottom: $promo-page__container-top;
+$promo-page__container-top--media639: $promo-page__container-top;
+$promo-page__container-bottom--media639: 50px;
+
+$button-height: 56px;
+$background-transition: background-color .4s ease;
+
+$custom-scrollbar-width: 9px;
+$mobile-layout-width: "max-width: 639px";
+
+$overlay-base-color: #000;
+
+$promocolumns-tablet-point: "max-width: 960px";
+$promocolumns-mobile-point: "max-width: 480px";
+
+$nav-mobile-point: "max-width: 560px";
+$nav-mobile-point-up: "min-width: 561px";
+
+$promo-nav-height: 50px;
+
+$shop-footer-height: 144px;
+$shop-main-padding-top: 71px;
+$shop-main-padding-bottom: 23px;
+
+
+$title-item-bg-1: #f5e5d8;

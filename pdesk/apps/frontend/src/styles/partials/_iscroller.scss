@@ -1,0 +1,22 @@
+.iscroller {
+	.ftscroller_scrollbar,
+	.iscroll-barV	{
+		position: absolute;
+		z-index: 100;
+		width: $custom-scrollbar-width;
+		bottom: 2px;
+		top: 2px;
+		right: 1px;
+
+		.ftscroller_scrollbarinner,
+		div {
+			@include border-radius(6px);
+			@include box-sizing(border-box);
+			z-index: 100;
+			position: absolute;
+			background: $scrollbar-color;
+			-webkit-background-clip: padding-box;
+			width: 100%;
+		}
+	}
+}
