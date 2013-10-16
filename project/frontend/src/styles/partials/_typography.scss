@@ -1,0 +1,35 @@
+%page-title {
+	margin: 0;
+	font: $base-title-font;
+	font-size: 36px;
+	line-height: 1;
+	color: inherit;
+
+	a {
+		color: inherit;
+	}
+}
+
+%page-sub-title {
+	font: $base-title-font;
+	display: block;
+	margin: 0;
+
+	a {
+		color: inherit;
+	}
+}
+
+.page-title {
+	@extend %page-title;
+}
+
+.page-sub-title {
+	@extend %page-sub-title;
+	font-size: 24px;
+	line-height: 1;
+
+	.page-title > & {
+		margin-top: 6px;
+	}
+}

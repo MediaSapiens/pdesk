@@ -1,8 +1,14 @@
-Django
-South
-wsgiref
-djangorestframework
-markdown       	# Markdown support for the browsable API.
-django-filter  	# Filtering support
-pyredmine 		# redmine api wrapper
+
+Django==1.5.4
+South==0.8.2
+wsgiref==0.1.2
+djangorestframework==2.3.8
+
+Markdown==2.3.1    # Markdown support for the browsable API.
+django-filter==0.7 # Filtering support
+pyredmine==0.2.4   # redmine api wrapper
+
+
+
+
 

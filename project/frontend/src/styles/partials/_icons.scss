@@ -1,0 +1,43 @@
+$icon-spacing: 20px;
+$icon-sprite-dimensions: true;
+
+// example of spriting
+
+@import "icon/*.png";
+// @include all-icon-sprites;
+
+// .icon--arrow-down {
+// 	@include icon-sprite("arrow-down");
+// }
+%pseudo-icon {
+	&:before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		z-index: 1;
+	}
+}
+
+.icon-arrow-left-black {
+	@extend %pseudo-icon;
+	padding-left: icon-sprite-width("arrow-left-black") + 7;
+
+	&:before {
+		$vshift: -1 - (icon-sprite-height("arrow-left-black") / 2);
+		@include icon-sprite("arrow-left-black");
+		left: 0;
+		margin-top: $vshift;
+	}
+}
+
+.icon-arrow-right-white {
+	@extend %pseudo-icon;
+	padding-right: icon-sprite-width("arrow-right-white") + 7;
+
+	&:before {
+		$vshift: -1 - (icon-sprite-height("arrow-right-white") / 2);
+		@include icon-sprite("arrow-right-white");
+		right: 0;
+		margin-top: $vshift;
+	}
+}

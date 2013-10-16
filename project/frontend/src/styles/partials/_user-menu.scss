@@ -1,0 +1,36 @@
+%header-link {
+	@include transition(color .2s ease);
+	text-decoration: none;
+	color: $base-inverse-color;
+
+	&:focus,
+	&.is-active,
+	&:hover {
+		color: $base-link-color;
+		text-decoration: none;
+	}
+}
+
+.user-menu {
+	float: right;
+	margin: 18px 0 0;
+	padding: 0;
+	list-style: none;
+	text-transform: uppercase;
+	font: 700 13px/18px $base-title-font-family;
+
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			float: left;
+			margin: 0 0 0 35px;
+		}
+	}
+
+	a {
+		@extend %header-link;
+	}
+}

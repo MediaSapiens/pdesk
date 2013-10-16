@@ -1,0 +1,119 @@
+$fixed-header-offset: 27px;
+
+@mixin fixednav() {
+	@include transform(translate(0, -27px) translateZ(0));
+	position: fixed;
+
+	.no-csstransforms3d &,
+	.no-csstransforms & {
+		top: 0;
+	}
+}
+
+%header-block {
+	max-width: 828px;
+	margin: 0 auto;
+}
+
+.promo-header {
+	@include transition(transform .3s ease);
+	position: absolute;
+	z-index: 300;
+	left: 0;
+	top: $fixed-header-offset;
+	right: 0;
+
+	&.is-fixed {
+		@include fixednav;
+	}
+
+	// fixed nav not on mbobiles
+	@media screen and ($nav-mobile-point-up) {
+		
+	}
+
+	@media screen and ("max-width: 1023px") {
+		@include fixednav;
+	}
+
+	@media screen and ("max-width: 639px") {
+		.no-csstransforms3d &,
+		.no-csstransforms & {
+			top: 0;
+		}
+	}
+
+	// static mobile nav
+	// @media screen and ($nav-mobile-point) {
+	// 	@include transform(translate(0, 0) translateZ(0));
+	// 	position: static;
+	// }
+}
+
+.promo-header__holder {
+	@include transition(max-width .3s ease, width .3s ease);
+	@extend %header-block;
+	background: $base-background;
+	position: relative;
+	overflow: hidden;
+
+	// overflow: hidden;
+
+	.is-fixed & {
+		max-width: 100%;
+	}
+
+	@media screen and ("max-width: 1023px") {
+		max-width: 100%;
+	}
+
+	@media screen and ($nav-mobile-point) {
+		overflow: visible;
+	}
+}
+
+%logo {
+	@include hide-text;
+	float: left;
+	margin: 0;
+	display: block;
+	position: relative;
+	z-index: 10;
+
+	a {
+	 	display: block;
+	 	height: 100%;
+	}
+}
+
+.logo {
+	@extend %logo;
+	@include icon-sprite("logo");
+
+	@media screen and ($nav-mobile-point) {
+		float: none;
+	}
+}
+
+
+.promo-header__container {
+	@extend %clearfix;
+	@extend %header-block;
+	position: relative;
+
+	&:before {
+		content: '';
+		position: absolute;
+		left: -999px;
+		right: 100%;
+		margin: 0 -158px 0 0;
+		top: 0;
+		bottom: 0;
+		background: $base-second-background;	
+
+		// static mobile nav
+		@media screen and ($nav-mobile-point) {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,25 @@
+.promo-footer {
+	@extend %footer-bg-pattern;
+	@include box-sizing(border-box);
+	background-color: #f9f9f9;
+	background-position: 50% 50%;
+	min-height: 79px;
+	padding: 33px 0 20px;
+	overflow: hidden;
+	font-size: 13px;
+	line-height: 24px;
+
+	@media screen and ("max-width: 640px") {
+		text-align: center;
+	}
+}
+
+.facebook-block {
+	@include inline-block(middle);
+}
+
+.fb-placeholder {
+	display: block;
+	@include icon-sprite("fb-placeholder");
+	@include hide-text(left);
+}

@@ -1,0 +1,12 @@
+.items-list {
+	margin: 0 -14px;
+	padding: 0;
+	list-style: none;
+
+	> li {
+		@include inline-block(top);
+		padding: 0 14px;
+		margin: 0 -4px 20px 0;
+		width: 530px;
+	}
+}
