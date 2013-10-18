@@ -4,9 +4,13 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+from project.apps.base.api import ProjectResource
+project_resource = ProjectResource()
+
+
 urlpatterns = patterns('',
     # Examples:
-    url(r'^rest/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^project/', include(project_resource.urls)),
     
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
