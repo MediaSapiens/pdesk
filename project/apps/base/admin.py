@@ -17,7 +17,7 @@ class RedProjectAdmin(admin.ModelAdmin):
 
 class RedTaskAdmin(admin.ModelAdmin):
     model = RedTask
-    list_display = ('red_id', 'title', 'project', 'estimated_hours', 'spent_hours')
+    list_display = ('red_id', 'title', 'project', 'estimated_hours', 'spent_hours', 'author', 'assigned_to')
 
 
 

@@ -23,7 +23,7 @@ class RedProject(models.Model):
 
 
     def __unicode__(self):
-        return self.username
+        return self.title
 
 
 
@@ -34,8 +34,11 @@ class RedTask(models.Model):
     title = models.CharField(max_length=500)
     project = models.ForeignKey(RedProject)
 
-    estimated_hours = models.CharField(max_length=500)
-    spent_hours = models.CharField(max_length=500)
+    author = models.ForeignKey(RedUser, related_name = 'author')
+    assigned_to = models.ForeignKey(RedUser, related_name = 'assigned_to', blank=True, null=True)
+
+    estimated_hours = models.CharField(max_length=500, blank=True, null=True)
+    spent_hours = models.CharField(max_length=500, blank=True, null=True)
 
 
     def __unicode__(self):
