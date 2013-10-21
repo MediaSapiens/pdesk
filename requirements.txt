@@ -8,6 +8,7 @@ Markdown==2.3.1    # Markdown support for the browsable API.
 django-filter==0.7 # Filtering support
 pyredmine==0.2.4   # redmine api wrapper
 
+python-mimeparse==0.1.4
 python-dateutil==2.1
 psycopg2==2.5.1
 
