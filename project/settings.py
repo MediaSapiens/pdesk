@@ -164,6 +164,12 @@ LOGGING = {
 }
 
 
+# testypie
+
+API_LIMIT_PER_PAGE = 0
+
+
+
 #Try local settings
 
 try:
