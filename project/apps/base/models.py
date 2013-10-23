@@ -31,8 +31,8 @@ class RedTask(models.Model):
     author = models.ForeignKey(RedUser, related_name = 'author')
     assigned_to = models.ForeignKey(RedUser, related_name = 'assigned_to', blank=True, null=True)
 
-    estimated_hours = models.CharField(max_length=500, blank=True, null=True)
-    spent_hours = models.CharField(max_length=500, blank=True, null=True)
+    estimated_hours = models.FloatField(blank=True, null=True)
+    spent_hours = models.FloatField(blank=True, null=True)
 
 
     def __unicode__(self):

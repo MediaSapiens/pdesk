@@ -14,6 +14,11 @@ class UserResource(ModelResource):
                 }
 
 class ProjectResource(ModelResource):
+
+    estimated_sum = fields.FloatField(readonly=True)
+    spent_sum = fields.FloatField(readonly=True)
+
+
     class Meta:
         queryset = RedProject.objects.all()
         resource_name = 'project'
@@ -21,8 +26,23 @@ class ProjectResource(ModelResource):
                     'id': ALL,
                 }
 
-    # def dehydrate_title(self, bundle):      
-    #     return bundle.data['title'].upper()
+    def dehydrate_estimated_sum(self, bundle):
+
+        tasks = bundle.obj.redtask_set.all()
+        estimated_sum = 0.0
+        for task in tasks:            
+            if task.estimated_hours:                
+                estimated_sum += task.estimated_hours
+        return estimated_sum
+
+
+    def dehydrate_spent_sum(self, bundle):        
+        tasks = bundle.obj.redtask_set.all()
+        spent_sum = 0.0
+        for task in tasks:
+            if task.spent_hours:                
+                spent_sum += task.spent_hours
+        return spent_sum
 
 
 class TaskResource(ModelResource):
