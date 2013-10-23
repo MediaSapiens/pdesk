@@ -2,8 +2,7 @@ from django.db import models
 
 
 class RedUser(models.Model):
-    
-    red_id = models.IntegerField()
+
     firstname = models.CharField(max_length=500)
     lastname = models.CharField(max_length=500)
     username = models.CharField(max_length=500)
@@ -17,20 +16,15 @@ class RedUser(models.Model):
 
 class RedProject(models.Model):
     
-
-    red_id = models.IntegerField()
     title = models.CharField(max_length=500)
-
 
     def __unicode__(self):
         return self.title
 
 
 
-class RedTask(models.Model):
+class RedTask(models.Model):    
 
-    
-    red_id = models.IntegerField()
     title = models.CharField(max_length=500)
     project = models.ForeignKey(RedProject)
 
