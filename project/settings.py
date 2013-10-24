@@ -130,6 +130,7 @@ INSTALLED_APPS = (
 
     'redmine',
     'tastypie',
+
     
     'project.apps.base',
     # Uncomment the next line to enable the admin:

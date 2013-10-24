@@ -26,7 +26,6 @@ def update_db(request):
         print proj, 'saved'
 
 
-
         for issue in project.issues:
 
             author = RedUser.objects.get(id=issue.author.id)
@@ -36,9 +35,10 @@ def update_db(request):
                 assigned_to = None
 
             iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours,
-                author=author, assigned_to=assigned_to)
+                spent_hours=issue.get_spent_hours() , author=author, assigned_to=assigned_to)
             iss.save()
             print iss, 'saved'
+
 
 
     return HttpResponse('Done')
