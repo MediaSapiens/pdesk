@@ -3,7 +3,7 @@ from redmine import Redmine
 
 from django.http import HttpResponse
 from project.settings import REDMINE_HOST, REDMINE_USER, REDMINE_PASS
-from project.apps.base.models import RedUser, RedProject, RedTask
+from project.apps.base.models import RedUser, RedProject, RedVersion, RedTask
 
 
 
@@ -25,6 +25,11 @@ def update_db(request):
         proj.save()
         print proj, 'saved'
 
+        for version in project.versions:
+
+            ver = RedVersion(id=version.id, title=version.name, project=proj)
+            ver.save()
+            
 
         for issue in project.issues:
 
@@ -34,8 +39,14 @@ def update_db(request):
             else:
                 assigned_to = None
 
+            if issue.fixed_version:
+                fixed_version = RedVersion.objects.get(id=issue.fixed_version.id)               
+            else:
+                fixed_version = None
+
+
             iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours,
-                spent_hours=issue.get_spent_hours() , author=author, assigned_to=assigned_to)
+                spent_hours=issue.get_spent_hours() , author=author, assigned_to=assigned_to, version=fixed_version)
             iss.save()
             print iss, 'saved'
 
