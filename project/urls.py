@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^update_db/', update_db),
     url(r'^', include(v1_api.urls)),
+    url(r'^index/$', 'project.views.index', name='index'),
+
     
     
     # Uncomment the admin/doc line below to enable admin documentation:
