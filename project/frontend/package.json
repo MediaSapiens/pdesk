@@ -1,5 +1,5 @@
 {
-  "name": "plandesk.io",
+  "name": "pdesk-frontend",
   "version": "0.0.0",
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -17,7 +17,8 @@
     "bower": "~0.9.2",
     "grunt-contrib-sass": "~0.4.1",
     "grunt-notify": "~0.2.11",
-    "grunt-contrib-concat": "~0.3.0"
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-autoprefixer": "~0.4.0"
   },
   "engines": {
     "node": ">=0.8.0"

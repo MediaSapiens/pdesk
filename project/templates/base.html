@@ -15,7 +15,6 @@
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		{% endblock viewport %}
 		
-		<link href='http://fonts.googleapis.com/css?family=PT+Sans|PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" media="all" href="/static/styles/main.css" type="text/css">
 
 		<!--[if lt IE 9]>
@@ -23,34 +22,12 @@
 		<![endif]-->
 
 		<!-- jquery cdn load -->
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 		<script type="text/javascript">
 			window.jQuery || document.write('<script type="text/javascript" src="/static/scripts/jquery.min.js"><\/script>');
 		</script>
 	</head>
 	<body class="{% block pagebodyclass %}{% endblock pagebodyclass %}">
-		<!--[if lt IE 9]>
-			<script type="text/javascript" 
-				src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">
-			</script>
-
-			<style>
-			 /* 
-				CSS rules to use for styling the overlay:
-					.chromeFrameOverlayContent
-					.chromeFrameOverlayContent iframe
-					.chromeFrameOverlayCloseBar
-					.chromeFrameOverlayUnderlay
-			 */
-			</style> 
-
-			<script>
-			 // You may want to place these lines inside an onload handler
-			 CFInstall.check({
-				 mode: "overlay"
-			 });
-			</script>
-		<![endif]-->
 
 		{% block page %}
 		{% endblock page %}
