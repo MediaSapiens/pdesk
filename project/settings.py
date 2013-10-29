@@ -165,6 +165,12 @@ LOGGING = {
 }
 
 
+# Redmine
+
+REDMINE_HOST = ''
+REDMINE_USER = ''
+REDMINE_PASS = ''
+
 # testypie
 
 API_LIMIT_PER_PAGE = 0

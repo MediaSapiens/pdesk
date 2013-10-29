@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class RedUser(models.Model):
 
     firstname = models.CharField(max_length=500)
@@ -8,18 +9,47 @@ class RedUser(models.Model):
     username = models.CharField(max_length=500)
     email = models.EmailField()
 
+    hours = models.FloatField(blank=True, null=True)
+
 
     def __unicode__(self):
         return self.username
 
 
 
-class RedProject(models.Model):
-    
+class RedRole(models.Model):
+        
     title = models.CharField(max_length=500)
 
     def __unicode__(self):
         return self.title
+
+
+
+class RedProject(models.Model):
+    
+    title = models.CharField(max_length=500)
+    # members = models.ManyToManyField(RedRoleSet, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title
+
+
+
+class RedRoleSet(models.Model):    
+    
+    users = models.ManyToManyField(RedUser, blank=True, null=True)
+    role = models.ForeignKey(RedRole)
+    project = models.ForeignKey(RedProject)
+
+    def __unicode__(self):
+        return self.role.title
+
+
+    class Meta:
+        unique_together = ('role', 'project',)
+
+
 
 
 class RedVersion(models.Model):
@@ -29,6 +59,7 @@ class RedVersion(models.Model):
 
     def __unicode__(self):
         return self.title
+
 
 
 class RedTask(models.Model):    
@@ -42,7 +73,6 @@ class RedTask(models.Model):
 
     estimated_hours = models.FloatField(blank=True, null=True)
     spent_hours = models.FloatField(blank=True, null=True)
-
 
     def __unicode__(self):
         return self.title

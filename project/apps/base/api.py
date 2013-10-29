@@ -2,7 +2,7 @@
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 
-from project.apps.base.models import RedUser, RedProject, RedTask
+from project.apps.base.models import RedUser, RedProject, RedVersion, RedTask
 
 
 class UserResource(ModelResource):
@@ -45,9 +45,28 @@ class ProjectResource(ModelResource):
         return spent_sum
 
 
+
+class VersionResource(ModelResource):
+
+    project = fields.ForeignKey(ProjectResource, 'project')
+    
+
+    class Meta:
+        queryset = RedVersion.objects.all()
+        resource_name = 'version'
+        filtering = {
+                    'id': ALL,
+                    'project': ALL_WITH_RELATIONS,
+                }
+
+    def dehydrate_project(self, bundle):
+        return bundle.obj.project.id      
+
+
 class TaskResource(ModelResource):
 
     project = fields.ForeignKey(ProjectResource, 'project')
+    version = fields.ForeignKey(VersionResource, 'version', null=True, blank=True)
     author = fields.ForeignKey(UserResource, 'author')
     assigned_to = fields.ForeignKey(UserResource, 'assigned_to', null=True, blank=True)
 
@@ -56,12 +75,16 @@ class TaskResource(ModelResource):
         resource_name = 'task'
         filtering = {
             'project': ALL_WITH_RELATIONS,
+            'version': ALL_WITH_RELATIONS,
             'author': ALL_WITH_RELATIONS, 
             'assigned_to': ALL_WITH_RELATIONS,             
         }
 
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id      
+
+    def dehydrate_version(self, bundle):
+        return bundle.obj.version.id   
 
     def dehydrate_author(self, bundle):
         return bundle.obj.author.id   
