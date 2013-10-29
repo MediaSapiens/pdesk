@@ -2,7 +2,8 @@
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 
-from project.apps.base.models import RedUser, RedProject, RedVersion, RedTask
+from project.apps.base.models import RedProject, RedVersion, RedTask
+from project.apps.base.models import RedUser, RedRole, RedRoleSet
 
 
 class UserResource(ModelResource):
@@ -12,19 +13,59 @@ class UserResource(ModelResource):
         filtering = {
                     'id': ALL,
                 }
+        include_resource_uri = False
+
+
+
+class RoleResource(ModelResource):    
+
+    class Meta:
+        queryset = RedRole.objects.all()
+        resource_name = 'role'
+        # filtering = {
+        #             'id': ALL,
+        #         }
+        include_resource_uri = False
+
+
+
+class RoleSetResource(ModelResource):
+
+    role = fields.ForeignKey(RoleResource, 'role')
+    users = fields.ToManyField(UserResource, 'users', full=True)
+
+    class Meta:
+        queryset = RedRoleSet.objects.all()
+        resource_name = 'roleset'
+        filtering = {
+                    'id': ALL,
+                    'role': ALL_WITH_RELATIONS,
+                }
+        include_resource_uri = False   
+
+
+    def dehydrate_role(self, bundle):
+        return bundle.obj.role.title  
+
+
 
 class ProjectResource(ModelResource):
 
     estimated_sum = fields.FloatField(readonly=True)
     spent_sum = fields.FloatField(readonly=True)
-
+    roleset = fields.ToManyField(RoleSetResource, 'redroleset_set', full=True)
 
     class Meta:
         queryset = RedProject.objects.all()
         resource_name = 'project'
         filtering = {
                     'id': ALL,
+                    'roleset': ALL_WITH_RELATIONS,
                 }
+        # always_return_data = True
+        include_resource_uri = False
+
+
 
     def dehydrate_estimated_sum(self, bundle):
 
@@ -45,12 +86,10 @@ class ProjectResource(ModelResource):
         return spent_sum
 
 
-
 class VersionResource(ModelResource):
 
     project = fields.ForeignKey(ProjectResource, 'project')
     
-
     class Meta:
         queryset = RedVersion.objects.all()
         resource_name = 'version'
@@ -58,9 +97,12 @@ class VersionResource(ModelResource):
                     'id': ALL,
                     'project': ALL_WITH_RELATIONS,
                 }
+        include_resource_uri = False                
+
 
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id      
+
 
 
 class TaskResource(ModelResource):
@@ -79,6 +121,8 @@ class TaskResource(ModelResource):
             'author': ALL_WITH_RELATIONS, 
             'assigned_to': ALL_WITH_RELATIONS,             
         }
+        include_resource_uri = False
+
 
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id      
