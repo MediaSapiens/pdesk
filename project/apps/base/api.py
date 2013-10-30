@@ -73,7 +73,10 @@ class TaskResource(ModelResource):
         return bundle.obj.project.id      
 
     def dehydrate_version(self, bundle):
-        return bundle.obj.version.id   
+        if bundle.obj.version:
+            return bundle.obj.version.id   
+        else:
+            return None
 
     def dehydrate_author(self, bundle):
         return bundle.obj.author.id   
