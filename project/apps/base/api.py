@@ -88,6 +88,8 @@ class TaskResource(ModelResource):
 
 class VersionResource(ModelResource):
 
+    estimated_sum = fields.FloatField(readonly=True)
+    spent_sum = fields.FloatField(readonly=True)
     project = fields.ForeignKey('project.apps.base.api.ProjectResource', 'project')
     tasks = fields.ToManyField(TaskResource, 'redtask_set', full=True)
     
@@ -105,6 +107,25 @@ class VersionResource(ModelResource):
 
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id   
+
+
+    def dehydrate_estimated_sum(self, bundle):
+
+        tasks = bundle.obj.redtask_set.all()
+        estimated_sum = 0.0
+        for task in tasks:            
+            if task.estimated_hours:                
+                estimated_sum += task.estimated_hours
+        return estimated_sum
+
+
+    def dehydrate_spent_sum(self, bundle):        
+        tasks = bundle.obj.redtask_set.all()
+        spent_sum = 0.0
+        for task in tasks:
+            if task.spent_hours:                
+                spent_sum += task.spent_hours
+        return spent_sum
 
 
 
