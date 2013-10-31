@@ -1,7 +1,11 @@
 
-from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.cache import SimpleCache
+from tastypie.utils import trailing_slash
+# from tastypie.authentication import BasicAuthentication
+from django.conf.urls import url
+
 
 from project.apps.base.models import RedProject, RedVersion, RedTask
 from project.apps.base.models import RedUser, RedRole, RedRoleSet
@@ -17,6 +21,7 @@ class UserResource(ModelResource):
 
         include_resource_uri = False
         cache = SimpleCache(timeout=10)
+        # authentication = BasicAuthentication()
 
 
 class RoleResource(ModelResource):    
@@ -30,6 +35,7 @@ class RoleResource(ModelResource):
 
         include_resource_uri = False
         cache = SimpleCache(timeout=10)
+
 
 
 
@@ -75,6 +81,7 @@ class TaskResource(ModelResource):
 
         include_resource_uri = False
         cache = SimpleCache(timeout=10)
+        # authentication = BasicAuthentication()
 
 
     def dehydrate_project(self, bundle):
@@ -96,6 +103,12 @@ class TaskResource(ModelResource):
             return None 
 
 
+class OtherTaskResource(TaskResource):
+
+    class Meta:
+        queryset = RedTask.objects.filter(version=None)
+
+
 
 class VersionResource(ModelResource):
 
@@ -115,7 +128,8 @@ class VersionResource(ModelResource):
                 }
 
         include_resource_uri = False 
-        cache = SimpleCache(timeout=10)               
+        cache = SimpleCache(timeout=10)
+        # authentication = BasicAuthentication()               
 
 
     def dehydrate_project(self, bundle):
@@ -148,7 +162,7 @@ class ProjectResource(ModelResource):
     spent_sum = fields.FloatField(readonly=True)
     roleset = fields.ToManyField(RoleSetResource, 'redroleset_set', full=True)
     versions = fields.ToManyField(VersionResource, 'redversion_set', full=True)
-    # other_tasks = fields.ToManyField(TaskResource, 'redtask_set', full=True)
+    other_tasks = fields.ToManyField(OtherTaskResource, 'redtask_set', full=True)
 
     class Meta:
         queryset = RedProject.objects.all()
@@ -161,6 +175,7 @@ class ProjectResource(ModelResource):
 
         include_resource_uri = False
         cache = SimpleCache(timeout=10)
+        # authentication = BasicAuthentication()
 
 
 
@@ -191,26 +206,52 @@ class ProjectResource(ModelResource):
     #     return None
 
 
-
-class TimeResource(ModelResource):
-
+# class TimeResource(Resource):
    
-    class Meta:
-        queryset = RedProject.objects.all()
-        resource_name = 'time'
-        filtering = {
-                    'id': ALL,
-                    'project': ALL_WITH_RELATIONS,
-                    # 'tasks': ALL_WITH_RELATIONS,
+#     class Meta:
+        
+#         resource_name = 'time'
 
-                }
-
-        include_resource_uri = False 
-        cache = SimpleCache(timeout=10)               
+#         include_resource_uri = False 
+#         cache = SimpleCache(timeout=10) 
+#         # authentication = BasicAuthentication() 
 
 
-    def dehydrate(self, bundle):
+#     def prepend_urls(self):
+#         return [
+#             url(r"^(?P<resource_name>%s)/(?P<type_slug>\w[\w/-]*)/(?P<obj_slug>\w[\w/-]*)%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_time'), name="api_get_time"),
+#         ]
 
-        print bundle.request.path
-        return bundle.obj
-           
+
+#     def get_time(self, request, **kwargs):
+
+#         if kwargs['obj_slug'] == 'project':
+#             pr = ProjectResource()
+#             basic_bundle = self.build_bundle(request=request)
+#             print basic_bundle
+       
+#             time = pr.obj_get(bundle=basic_bundle, id=int(request.GET['id']))
+
+#             if kwargs['type_slug'] == 'spent':
+#                 print time.spent_sum            
+
+#             elif kwargs['type_slug'] == 'estimate':
+#                 print time.estimated_sum 
+
+
+#         elif kwargs['obj_slug'] == 'user':
+#             if kwargs['type_slug'] == 'spent':
+#                 print kwargs                       
+
+#             elif kwargs['type_slug'] == 'estimate':
+#                 print kwargs            
+
+
+#         elif kwargs['obj_slug'] == 'all':
+#             if kwargs['type_slug'] == 'spent':
+#                 print kwargs                       
+
+#             elif kwargs['type_slug'] == 'estimate':
+#                 print kwargs            
+
+#         return self.create_response(request, [])
