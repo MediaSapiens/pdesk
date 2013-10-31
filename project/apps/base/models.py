@@ -11,7 +11,6 @@ class RedUser(models.Model):
 
     hours = models.FloatField(blank=True, null=True)
 
-
     def __unicode__(self):
         return self.username
 
@@ -29,7 +28,6 @@ class RedRole(models.Model):
 class RedProject(models.Model):
     
     title = models.CharField(max_length=500)
-    # members = models.ManyToManyField(RedRoleSet, blank=True, null=True)
 
     def __unicode__(self):
         return self.title
@@ -45,9 +43,8 @@ class RedRoleSet(models.Model):
     def __unicode__(self):
         return self.role.title
 
-
     class Meta:
-        unique_together = ('role', 'project',)
+        unique_together = ('role', 'project')
 
 
 

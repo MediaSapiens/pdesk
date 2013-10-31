@@ -1,6 +1,7 @@
 
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
+from tastypie.cache import SimpleCache
 
 from project.apps.base.models import RedProject, RedVersion, RedTask
 from project.apps.base.models import RedUser, RedRole, RedRoleSet
@@ -13,8 +14,9 @@ class UserResource(ModelResource):
         filtering = {
                     'id': ALL,
                 }
-        include_resource_uri = False
 
+        include_resource_uri = False
+        cache = SimpleCache(timeout=10)
 
 
 class RoleResource(ModelResource):    
@@ -25,7 +27,9 @@ class RoleResource(ModelResource):
         filtering = {
                     'id': ALL,
                 }
+
         include_resource_uri = False
+        cache = SimpleCache(timeout=10)
 
 
 
@@ -41,7 +45,9 @@ class RoleSetResource(ModelResource):
                     'id': ALL,
                     'role': ALL_WITH_RELATIONS,
                 }
+
         include_resource_uri = False   
+        cache = SimpleCache(timeout=10)
 
 
     def dehydrate_role(self, bundle):
@@ -66,7 +72,9 @@ class TaskResource(ModelResource):
             'author': ALL_WITH_RELATIONS, 
             'assigned_to': ALL_WITH_RELATIONS,             
         }
+
         include_resource_uri = False
+        cache = SimpleCache(timeout=10)
 
 
     def dehydrate_project(self, bundle):
@@ -105,7 +113,9 @@ class VersionResource(ModelResource):
                     'tasks': ALL_WITH_RELATIONS,
 
                 }
-        include_resource_uri = False                
+
+        include_resource_uri = False 
+        cache = SimpleCache(timeout=10)               
 
 
     def dehydrate_project(self, bundle):
@@ -148,7 +158,9 @@ class ProjectResource(ModelResource):
                     'roleset': ALL_WITH_RELATIONS,
                 }
         # always_return_data = True
+
         include_resource_uri = False
+        cache = SimpleCache(timeout=10)
 
 
 
@@ -179,4 +191,26 @@ class ProjectResource(ModelResource):
     #     return None
 
 
-                
+
+class TimeResource(ModelResource):
+
+   
+    class Meta:
+        queryset = RedProject.objects.all()
+        resource_name = 'time'
+        filtering = {
+                    'id': ALL,
+                    'project': ALL_WITH_RELATIONS,
+                    # 'tasks': ALL_WITH_RELATIONS,
+
+                }
+
+        include_resource_uri = False 
+        cache = SimpleCache(timeout=10)               
+
+
+    def dehydrate(self, bundle):
+
+        print bundle.request.path
+        return bundle.obj
+           

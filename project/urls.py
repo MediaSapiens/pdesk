@@ -8,13 +8,14 @@ from project.apps.base.views import update_db
 
 from tastypie.api import Api
 from project.apps.base.api import UserResource, ProjectResource, VersionResource, TaskResource
-
+from project.apps.base.api import TimeResource
 
 v1_api = Api(api_name='api')
 v1_api.register(UserResource())
 v1_api.register(ProjectResource())
 v1_api.register(VersionResource())
 v1_api.register(TaskResource())
+v1_api.register(TimeResource())
 
 
 urlpatterns = patterns('',
