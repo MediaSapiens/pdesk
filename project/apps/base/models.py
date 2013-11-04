@@ -16,6 +16,26 @@ class RedUser(models.Model):
 
 
 
+    def estimated_sum(self):
+
+        tasks = self.assigned_to.all()
+        estimated_sum = 0.0
+        for task in tasks:            
+            if task.estimated_hours:                
+                estimated_sum += task.estimated_hours
+        return estimated_sum
+
+
+    def spent_sum(self):        
+        tasks = self.assigned_to.all()
+        spent_sum = 0.0
+        for task in tasks:
+            if task.spent_hours:                
+                spent_sum += task.spent_hours
+        return spent_sum
+
+
+
 class RedRole(models.Model):
         
     title = models.CharField(max_length=500)
@@ -31,6 +51,27 @@ class RedProject(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+    def estimated_sum(self):
+
+        tasks = self.redtask_set.all()
+        estimated_sum = 0.0
+        for task in tasks:            
+            if task.estimated_hours:                
+                estimated_sum += task.estimated_hours
+        return estimated_sum
+
+
+    def spent_sum(self):        
+        tasks = self.redtask_set.all()
+        spent_sum = 0.0
+        for task in tasks:
+            if task.spent_hours:                
+                spent_sum += task.spent_hours
+        return spent_sum
+
+
 
 
 
@@ -56,6 +97,25 @@ class RedVersion(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+    def estimated_sum(self):
+
+        tasks = self.redtask_set.all()
+        estimated_sum = 0.0
+        for task in tasks:            
+            if task.estimated_hours:                
+                estimated_sum += task.estimated_hours
+        return estimated_sum
+
+
+    def spent_sum(self):        
+        tasks = self.redtask_set.all()
+        spent_sum = 0.0
+        for task in tasks:
+            if task.spent_hours:                
+                spent_sum += task.spent_hours
+        return spent_sum
 
 
 
