@@ -28,7 +28,7 @@ class UserResource(ModelResource):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
             bundle.data['spent_sum'] = bundle.obj.spent_sum()
             return bundle
-            
+
 
 
 class RoleResource(ModelResource):    
@@ -42,7 +42,6 @@ class RoleResource(ModelResource):
 
         include_resource_uri = False
         cache = SimpleCache(timeout=10)
-
 
 
 
@@ -111,6 +110,7 @@ class TaskResource(ModelResource):
 
 
 
+
 class OtherTaskResource(TaskResource):
 
     class Meta:
@@ -150,23 +150,6 @@ class VersionResource(ModelResource):
             bundle.data['spent_sum'] = bundle.obj.spent_sum()
             return bundle
 
-    # def dehydrate_estimated_sum(self, bundle):
-
-    #     tasks = bundle.obj.redtask_set.all()
-    #     estimated_sum = 0.0
-    #     for task in tasks:            
-    #         if task.estimated_hours:                
-    #             estimated_sum += task.estimated_hours
-    #     return estimated_sum
-
-
-    # def dehydrate_spent_sum(self, bundle):        
-    #     tasks = bundle.obj.redtask_set.all()
-    #     spent_sum = 0.0
-    #     for task in tasks:
-    #         if task.spent_hours:                
-    #             spent_sum += task.spent_hours
-    #     return spent_sum
 
 
 
@@ -198,40 +181,6 @@ class ProjectResource(ModelResource):
             return bundle
 
 
-    # def dehydrate_estimated_sum(self, bundle):
-
-    #     tasks = bundle.obj.redtask_set.all()
-    #     estimated_sum = 0.0
-    #     for task in tasks:            
-    #         if task.estimated_hours:                
-    #             estimated_sum += task.estimated_hours
-    #     return estimated_sum
-
-
-    # def dehydrate_spent_sum(self, bundle):        
-    #     tasks = bundle.obj.redtask_set.all()
-    #     spent_sum = 0.0
-    #     for task in tasks:
-    #         if task.spent_hours:                
-    #             spent_sum += task.spent_hours
-    #     return spent_sum
-
-    
-    # def get_list(self, request, **kwargs):
-    #     # print dir(self)
-
-    #     print self._meta , dir(self._meta)
-    #     super(ProjectResource, self).get_list(request, **kwargs)
-
-
-
-
-    # def dehydrate_other_tasks(self, bundle):        
-
-    #     print bundle.data
-    #     print dir(bundle)
-
-    #     return None
 
 
 class TimeResource(Resource):
@@ -254,33 +203,48 @@ class TimeResource(Resource):
 
     def get_time(self, request, **kwargs):
 
-        if kwargs['obj_slug'] == 'project':
-            pr = ProjectResource()
-            basic_bundle = self.build_bundle(request=request)
-            print basic_bundle
+        responce = {}
+        if kwargs['obj_slug'] == 'project':        
        
-            time = pr.obj_get(bundle=basic_bundle, id=int(request.GET['id']))
+            time = RedProject.objects.get(id=request.GET['id'])
 
             if kwargs['type_slug'] == 'spent':
-                print time.spent_sum            
+                responce = {'spent_sum':time.spent_sum()}        
 
             elif kwargs['type_slug'] == 'estimate':
-                print time.estimated_sum 
+                responce = {'estimated_sum':time.estimated_sum()}  
 
 
         elif kwargs['obj_slug'] == 'user':
+
+            time = RedUser.objects.get(id=request.GET['id'])
+
             if kwargs['type_slug'] == 'spent':
-                print kwargs                       
+                responce = {'spent_sum':time.spent_sum()}                        
 
             elif kwargs['type_slug'] == 'estimate':
-                print kwargs            
+                responce = {'estimated_sum':time.estimated_sum()}         
 
 
         elif kwargs['obj_slug'] == 'all':
+
+            time = RedProject.objects.all()
+
             if kwargs['type_slug'] == 'spent':
-                print kwargs                       
+                spent_sum = 0.0
+                for obj in time:
+                    if obj.spent_sum():                
+                        spent_sum += obj.spent_sum()
+                responce = {'spent_sum':spent_sum}  
+
+                    
 
             elif kwargs['type_slug'] == 'estimate':
-                print kwargs            
+                estimated_sum = 0.0
+                for obj in time:
+                    if obj.estimated_sum():                
+                        estimated_sum += obj.estimated_sum()
+                responce = {'estimated_sum':estimated_sum}  
 
-        return self.create_response(request, [])
+
+        return self.create_response(request, responce)
