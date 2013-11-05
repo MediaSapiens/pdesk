@@ -241,23 +241,16 @@ class TimeResource(Resource):
         elif kwargs['obj_slug'] == 'all':
             print '---->all<----'
 
-            time = RedProject.objects.all()
-            print time
+            time = RedProject.objects.all()   
 
-            if kwargs['type_slug'] == 'spent':
-                print '---->spent<----'
+            if kwargs['type_slug'] == 'spent':                
                 spent_sum = 0.0
                 for obj in time:
-                    if 'limit' in request.GET:
-                        print '---->limit<----'
-                        print bool(obj.spent_sum(limit=request.GET['limit']))                        
-                        if obj.spent_sum(limit=request.GET['limit']):
-
-                            print obj.spent_sum(limit=request.GET['limit'])                 
-                            spent_sum += obj.spent_sum(limit=request.GET['limit'])
+                    if 'limit' in request.GET:                              
+                        if obj.spent_sum(limit=request.GET['limit']):              
+                            spent_sum += obj.spent_sum(limit=request.GET['limit'])                            
                     else: 
-                        if obj.spent_sum():  
-                            print obj.spent_sum()                
+                        if obj.spent_sum():                                         
                             spent_sum += obj.spent_sum()
                 responce = {'spent_sum':spent_sum}  
           
@@ -265,8 +258,12 @@ class TimeResource(Resource):
             elif kwargs['type_slug'] == 'estimate':
                 estimated_sum = 0.0
                 for obj in time:
-                    if obj.estimated_sum():
-                        estimated_sum += obj.estimated_sum()
+                    if 'limit' in request.GET:                              
+                        if obj.estimated_sum(limit=request.GET['limit']):              
+                            estimated_sum += obj.estimated_sum(limit=request.GET['limit'])                            
+                    else: 
+                        if obj.estimated_sum():
+                            estimated_sum += obj.estimated_sum()
                 responce = {'estimated_sum':estimated_sum}  
 
 
