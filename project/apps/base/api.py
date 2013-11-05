@@ -252,8 +252,7 @@ class TimeResource(Resource):
                     else: 
                         if obj.spent_sum():                                         
                             spent_sum += obj.spent_sum()
-                responce = {'spent_sum':spent_sum}  
-          
+                responce = {'spent_sum':spent_sum}            
 
             elif kwargs['type_slug'] == 'estimate':
                 estimated_sum = 0.0
