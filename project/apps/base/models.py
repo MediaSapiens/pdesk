@@ -5,6 +5,61 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 
 
+def user_limit(self, limit, tasks):
+    
+    now = datetime.datetime.now()
+    today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+    if limit == 'thisweek':  
+        monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+        tasks = self.assigned_to.filter(updated_on__gte=monday_of_this_week)                
+
+    elif limit == 'lastweek':              
+        monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+        print monday_of_this_week
+        monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+        tasks = self.assigned_to.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+  
+    elif limit == 'thismonth':
+        start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
+        tasks = self.assigned_to.filter(updated_on__gte=start_of_this_month)
+
+    elif limit == 'lastmonth':
+        start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
+        start_of_last_month = start_of_this_month - relativedelta(months=1)
+        tasks = self.assigned_to.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
+
+    return tasks
+
+
+
+
+def project_limit(self, limit, tasks):
+
+    now = datetime.datetime.now()
+    today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+    if limit == 'thisweek':  
+        monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+        tasks = self.redtask_set.filter(updated_on__gte=monday_of_this_week)                
+
+    elif limit == 'lastweek':              
+        monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+        monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+        tasks = self.redtask_set.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+  
+    elif limit == 'thismonth':
+        start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
+        tasks = self.redtask_set.filter(updated_on__gte=start_of_this_month)
+
+    elif limit == 'lastmonth':
+        start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
+        start_of_last_month = start_of_this_month - relativedelta(months=1)
+        tasks = self.redtask_set.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
+
+    return tasks
+
+
 
 
 class RedUser(models.Model):
@@ -25,32 +80,9 @@ class RedUser(models.Model):
 
         tasks = []
         if limit:
-            now = datetime.datetime.now()
-            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
-
-            if limit == 'thisweek':  
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                tasks = self.assigned_to.filter(updated_on__gte=monday_of_this_week)                
-
-            elif limit == 'lastweek':              
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                print monday_of_this_week
-                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
-                tasks = self.assigned_to.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
-          
-            elif limit == 'thismonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
-                tasks = self.assigned_to.filter(updated_on__gte=start_of_this_month)
-
-            elif limit == 'lastmonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
-                start_of_last_month = start_of_this_month - relativedelta(months=1)
-                tasks = self.assigned_to.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
-
-
+            tasks = user_limit(self, limit, tasks)
         else:            
             tasks = self.assigned_to.all()
-
 
         estimated_sum = 0.0
         for task in tasks:                      
@@ -62,35 +94,11 @@ class RedUser(models.Model):
 
     def spent_sum(self, limit=None):  
        
-        tasks = []
+        tasks = []           
         if limit:
-           
-            now = datetime.datetime.now()
-            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
-
-            if limit == 'thisweek':            
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                tasks = self.assigned_to.filter(updated_on__gte=monday_of_this_week)  
-                print tasks 
-
-            elif limit == 'lastweek':              
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
-                tasks = self.assigned_to.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
-          
-            elif limit == 'thismonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
-                tasks = self.assigned_to.filter(updated_on__gte=start_of_this_month)
-
-            elif limit == 'lastmonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
-                start_of_last_month = start_of_this_month - relativedelta(months=1)
-                tasks = self.assigned_to.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
-
-
+            tasks = user_limit(self, limit, tasks)
         else:            
             tasks = self.assigned_to.all()
-
 
         spent_sum = 0.0
         for task in tasks:
@@ -122,29 +130,7 @@ class RedProject(models.Model):
 
         tasks = []
         if limit:
-            now = datetime.datetime.now()
-            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
-
-            if limit == 'thisweek':  
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                tasks = self.redtask_set.filter(updated_on__gte=monday_of_this_week)                
-
-
-            elif limit == 'lastweek':              
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
-                tasks = self.redtask_set.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
-          
-            elif limit == 'thismonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
-                tasks = self.redtask_set.filter(updated_on__gte=start_of_this_month)
-
-            elif limit == 'lastmonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
-                start_of_last_month = start_of_this_month - relativedelta(months=1)
-                tasks = self.redtask_set.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
-
-
+            tasks = user_limit(self, limit, tasks)
         else:            
             tasks = self.redtask_set.all()
 
@@ -159,31 +145,8 @@ class RedProject(models.Model):
     def spent_sum(self, limit=None):  
        
         tasks = []
-        if limit:
-           
-            now = datetime.datetime.now()
-            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
-
-            if limit == 'thisweek':            
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                tasks = self.redtask_set.filter(updated_on__gte=monday_of_this_week)  
-                print tasks 
-
-            elif limit == 'lastweek':              
-                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
-                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
-                tasks = self.redtask_set.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
-          
-            elif limit == 'thismonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0)
-                tasks = self.redtask_set.filter(updated_on__gte=start_of_this_month)
-
-            elif limit == 'lastmonth':
-                start_of_this_month = datetime.datetime(now.year, now.month, 1, 0, 0) 
-                start_of_last_month = start_of_this_month - relativedelta(months=1)
-                tasks = self.redtask_set.filter(updated_on__gte=start_of_last_month, updated_on__lt=start_of_this_month)
-
-
+        if limit:           
+            tasks = user_limit(self, limit, tasks)
         else:            
             tasks = self.redtask_set.all()
 
