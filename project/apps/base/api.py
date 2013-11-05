@@ -20,7 +20,7 @@ class UserResource(ModelResource):
                 }
 
         include_resource_uri = False
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()
 
 
@@ -41,7 +41,7 @@ class RoleResource(ModelResource):
                 }
 
         include_resource_uri = False
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
 
 
 
@@ -59,7 +59,7 @@ class RoleSetResource(ModelResource):
                 }
 
         include_resource_uri = False   
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
 
 
     def dehydrate_role(self, bundle):
@@ -86,7 +86,7 @@ class TaskResource(ModelResource):
         }
 
         include_resource_uri = False
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()
 
 
@@ -121,8 +121,6 @@ class OtherTaskResource(TaskResource):
 
 class VersionResource(ModelResource):
 
-    estimated_sum = fields.FloatField(readonly=True)
-    spent_sum = fields.FloatField(readonly=True)
     project = fields.ForeignKey('project.apps.base.api.ProjectResource', 'project')
     tasks = fields.ToManyField(TaskResource, 'redtask_set', full=True)
     
@@ -137,7 +135,7 @@ class VersionResource(ModelResource):
                 }
 
         include_resource_uri = False 
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()               
 
 
@@ -155,8 +153,6 @@ class VersionResource(ModelResource):
 
 class ProjectResource(ModelResource):
 
-    # estimated_sum = fields.FloatField(readonly=True)
-    # spent_sum = fields.FloatField(readonly=True)
     roleset = fields.ToManyField(RoleSetResource, 'redroleset_set', full=True)
     versions = fields.ToManyField(VersionResource, 'redversion_set', full=True)
     other_tasks = fields.ToManyField(OtherTaskResource, 'redtask_set', full=True)
@@ -171,7 +167,7 @@ class ProjectResource(ModelResource):
         # always_return_data = True
 
         include_resource_uri = False
-        cache = SimpleCache(timeout=10)
+        # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()
 
 
@@ -188,9 +184,8 @@ class TimeResource(Resource):
     class Meta:
         
         resource_name = 'time'
-
         include_resource_uri = False 
-        cache = SimpleCache(timeout=10) 
+        # cache = SimpleCache(timeout=10) 
         # authentication = BasicAuthentication() 
 
 
@@ -204,15 +199,25 @@ class TimeResource(Resource):
     def get_time(self, request, **kwargs):
 
         responce = {}
+
         if kwargs['obj_slug'] == 'project':        
        
             time = RedProject.objects.get(id=request.GET['id'])
 
             if kwargs['type_slug'] == 'spent':
-                responce = {'spent_sum':time.spent_sum()}        
+                if 'limit' in request.GET:
+                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'spent_sum':time.spent_sum()}
+
+
 
             elif kwargs['type_slug'] == 'estimate':
-                responce = {'estimated_sum':time.estimated_sum()}  
+                if 'limit' in request.GET:
+                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'estimated_sum':time.estimated_sum()}  
+
 
 
         elif kwargs['obj_slug'] == 'user':
@@ -220,29 +225,47 @@ class TimeResource(Resource):
             time = RedUser.objects.get(id=request.GET['id'])
 
             if kwargs['type_slug'] == 'spent':
-                responce = {'spent_sum':time.spent_sum()}                        
+                if 'limit' in request.GET:
+                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'spent_sum':time.spent_sum()}                     
 
             elif kwargs['type_slug'] == 'estimate':
-                responce = {'estimated_sum':time.estimated_sum()}         
+                if 'limit' in request.GET:
+                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'estimated_sum':time.estimated_sum()}  
+
 
 
         elif kwargs['obj_slug'] == 'all':
+            print '---->all<----'
 
             time = RedProject.objects.all()
+            print time
 
             if kwargs['type_slug'] == 'spent':
+                print '---->spent<----'
                 spent_sum = 0.0
                 for obj in time:
-                    if obj.spent_sum():                
-                        spent_sum += obj.spent_sum()
-                responce = {'spent_sum':spent_sum}  
+                    if 'limit' in request.GET:
+                        print '---->limit<----'
+                        print bool(obj.spent_sum(limit=request.GET['limit']))                        
+                        if obj.spent_sum(limit=request.GET['limit']):
 
-                    
+                            print obj.spent_sum(limit=request.GET['limit'])                 
+                            spent_sum += obj.spent_sum(limit=request.GET['limit'])
+                    else: 
+                        if obj.spent_sum():  
+                            print obj.spent_sum()                
+                            spent_sum += obj.spent_sum()
+                responce = {'spent_sum':spent_sum}  
+          
 
             elif kwargs['type_slug'] == 'estimate':
                 estimated_sum = 0.0
                 for obj in time:
-                    if obj.estimated_sum():                
+                    if obj.estimated_sum():
                         estimated_sum += obj.estimated_sum()
                 responce = {'estimated_sum':estimated_sum}  
 

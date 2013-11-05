@@ -85,8 +85,9 @@ def update_db(request):
                 fixed_version = None
 
 
-            iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours,
-                spent_hours=issue.get_spent_hours() , author=author, assigned_to=assigned_to, version=fixed_version)
+            iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours, 
+                spent_hours=issue.get_spent_hours(), author=author, assigned_to=assigned_to, 
+                version=fixed_version, updated_on=issue.updated_on)
             iss.save()
             print iss, 'saved'
 

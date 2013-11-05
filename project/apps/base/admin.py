@@ -29,7 +29,7 @@ class RedVersionAdmin(admin.ModelAdmin):
 
 class RedTaskAdmin(admin.ModelAdmin):
     model = RedTask
-    list_display = ('id', 'title', 'project', 'estimated_hours', 'spent_hours', 'author', 'assigned_to', 'version')
+    list_display = ('id', 'title', 'project', 'estimated_hours', 'spent_hours', 'author', 'assigned_to', 'version', 'updated_on')
 
 
 

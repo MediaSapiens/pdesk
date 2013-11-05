@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+
 
 
 
@@ -16,23 +19,81 @@ class RedUser(models.Model):
 
 
 
-    def estimated_sum(self):
+    def estimated_sum(self, limit=None):
 
-        tasks = self.assigned_to.all()
+        tasks = []
+        if limit:
+            now = datetime.datetime.now()
+            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+            if limit == 'thisweek':  
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                tasks = self.assigned_to.filter(updated_on__gte=monday_of_this_week)                
+
+
+            elif limit == 'lastweek':              
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+                tasks = self.assigned_to.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+          
+            elif limit == 'lastmonth':
+                pass
+   
+
+
+            elif limit == 'thismonth':
+                pass   
+
+
+        else:            
+            tasks = self.assigned_to.all()
+
+
         estimated_sum = 0.0
-        for task in tasks:            
-            if task.estimated_hours:                
+        for task in tasks:                      
+            if task.estimated_hours:                             
                 estimated_sum += task.estimated_hours
         return estimated_sum
 
 
-    def spent_sum(self):        
-        tasks = self.assigned_to.all()
+
+    def spent_sum(self, limit=None):  
+       
+        tasks = []
+        if limit:
+           
+            now = datetime.datetime.now()
+            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+            if limit == 'thisweek':            
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                tasks = self.assigned_to.filter(updated_on__gte=monday_of_this_week)  
+                print tasks 
+
+            elif limit == 'lastweek':              
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+                tasks = self.assigned_to.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+          
+            elif limit == 'lastmonth':
+                pass
+   
+
+
+            elif limit == 'thismonth':
+                pass   
+
+
+        else:            
+            tasks = self.assigned_to.all()
+
+
         spent_sum = 0.0
         for task in tasks:
             if task.spent_hours:                
                 spent_sum += task.spent_hours
         return spent_sum
+
 
 
 
@@ -53,18 +114,74 @@ class RedProject(models.Model):
         return self.title
 
 
-    def estimated_sum(self):
+    def estimated_sum(self, limit=None):
 
-        tasks = self.redtask_set.all()
+        tasks = []
+        if limit:
+            now = datetime.datetime.now()
+            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+            if limit == 'thisweek':  
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                tasks = self.redtask_set.filter(updated_on__gte=monday_of_this_week)                
+
+
+            elif limit == 'lastweek':              
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+                tasks = self.redtask_set.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+          
+            elif limit == 'lastmonth':
+                pass
+   
+
+
+            elif limit == 'thismonth':
+                pass   
+
+
+        else:            
+            tasks = self.redtask_set.all()
+
+
         estimated_sum = 0.0
-        for task in tasks:            
-            if task.estimated_hours:                
+        for task in tasks:                      
+            if task.estimated_hours:                             
                 estimated_sum += task.estimated_hours
         return estimated_sum
 
 
-    def spent_sum(self):        
-        tasks = self.redtask_set.all()
+    def spent_sum(self, limit=None):  
+       
+        tasks = []
+        if limit:
+           
+            now = datetime.datetime.now()
+            today = datetime.datetime(now.year, now.month, now.day, 0, 0)
+
+            if limit == 'thisweek':            
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                tasks = self.redtask_set.filter(updated_on__gte=monday_of_this_week)  
+                print tasks 
+
+            elif limit == 'lastweek':              
+                monday_of_this_week = today - datetime.timedelta(days=(today.isocalendar()[2] - 1))
+                monday_of_last_week = monday_of_this_week - datetime.timedelta(days=7)       
+                tasks = self.redtask_set.filter(updated_on__gte=monday_of_last_week, updated_on__lt=monday_of_this_week)
+          
+            elif limit == 'lastmonth':
+                pass
+   
+
+
+            elif limit == 'thismonth':
+                pass   
+
+
+        else:            
+            tasks = self.redtask_set.all()
+
+
         spent_sum = 0.0
         for task in tasks:
             if task.spent_hours:                
@@ -130,6 +247,8 @@ class RedTask(models.Model):
 
     estimated_hours = models.FloatField(blank=True, null=True)
     spent_hours = models.FloatField(blank=True, null=True)
+
+    updated_on = models.DateTimeField()
 
     def __unicode__(self):
         return self.title
