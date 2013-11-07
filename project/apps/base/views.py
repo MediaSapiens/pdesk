@@ -4,7 +4,7 @@ from redmine import Redmine
 from django.http import HttpResponse
 from project.settings import REDMINE_HOST, REDMINE_USER, REDMINE_PASS
 from project.apps.base.models import RedProject, RedVersion, RedTaskStatus, RedTask
-from project.apps.base.models import RedUser, RedRole, RedRoleSet
+from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJournalEntry
 
 
 def update_db(request):
@@ -88,14 +88,48 @@ def update_db(request):
             else:
                 fixed_version = None
 
-
-
             iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours, 
                 spent_hours=issue.get_spent_hours(), author=author, assigned_to=assigned_to, 
                 version=fixed_version, updated_on=issue.updated_on, status=status)
             iss.save()
             print iss, 'saved'
 
-
+            if issue.journals:
+                for journal in issue.journals:
+                    for detail in journal.details:
+                        if detail['name'] == 'status_id':
+                            status = RedTaskStatus.objects.get(id=int(detail['new_value']))
+                            user = RedUser.objects.get(id=journal.user)
+                            jrn = RedTaskJournalEntry(id=journal.id, task=iss, status=status, 
+                                user=user, created_on=journal.created_on)
+                            jrn.save()
+                            print jrn, 'saved'
 
     return HttpResponse('Done')
+
+
+"""
+
+"journals":[
+{"details":[{"name":"status_id","property":"attr","new_value":"2","old_value":"1"},
+{"name":"assigned_to_id","property":"attr","new_value":"1"},
+{"name":"done_ratio","property":"attr","new_value":"10","old_value":"0"}
+,{"name":"estimated_hours","property":"attr","new_value":"1"}],
+"created_on":"2013-11-07T12:50:18Z","id":5,"user":{"name":"Mikhail Kushchenko","id":3},"notes":""}]
+
+
+"journals":[
+    {"details":
+    [{"name":"1","property":"attachment","new_value":"((.png"},
+    {"name":"status_id","property":"attr","new_value":"3","old_value":"2"},
+    {"name":"assigned_to_id","property":"attr","new_value":"1","old_value":"3"}],
+    "created_on":"2013-11-06T11:16:59Z","id":3,"user":{"name":"Mikhail Kushchenko","id":3},"notes":"dsfdfsdfs"},
+
+    {"details":
+    [{"name":"status_id","property":"attr","new_value":"6","old_value":"3"},
+    {"name":"assigned_to_id","property":"attr","new_value":"4","old_value":"1"},
+    {"name":"done_ratio","property":"attr","new_value":"30","old_value":"0"}],
+    "created_on":"2013-11-06T11:18:58Z","id":4,"user":{"name":"Mikhail Kushchenko","id":3},"notes":"g"}
+    ],
+
+"""   

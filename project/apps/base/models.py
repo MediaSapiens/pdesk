@@ -201,12 +201,14 @@ class RedVersion(models.Model):
 
 
 
+
 class RedTaskStatus(models.Model):
         
     title = models.CharField(max_length=500)
 
     def __unicode__(self):
         return self.title
+
 
 
 class RedTask(models.Model):    
@@ -226,5 +228,19 @@ class RedTask(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+
+class RedTaskJournalEntry(models.Model):
+        
+    task = models.ForeignKey(RedTask)
+    status = models.ForeignKey(RedTaskStatus)
+    created_on = models.DateTimeField()
+    user = models.ForeignKey(RedUser)
+
+
+    def __unicode__(self):
+        return self.task.title
+
 
 

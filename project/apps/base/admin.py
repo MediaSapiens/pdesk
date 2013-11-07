@@ -2,7 +2,7 @@
 from django.contrib import admin
 
 from project.apps.base.models import RedProject, RedVersion, RedTaskStatus, RedTask
-from project.apps.base.models import RedUser, RedRole, RedRoleSet
+from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJournalEntry
 
 
 class RedUserAdmin(admin.ModelAdmin):
@@ -35,6 +35,9 @@ class RedTaskAdmin(admin.ModelAdmin):
     model = RedTask
     list_display = ('id', 'title', 'project', 'estimated_hours', 'spent_hours', 'author', 'assigned_to', 'version', 'status', 'updated_on')
 
+class RedTaskJournalEntryAdmin(admin.ModelAdmin):
+    model = RedTaskJournalEntry
+    list_display = ('id', 'task', 'status', 'created_on')
 
 
 admin.site.register(RedUser, RedUserAdmin)
@@ -45,3 +48,4 @@ admin.site.register(RedProject, RedProjectAdmin)
 admin.site.register(RedVersion, RedVersionAdmin)
 admin.site.register(RedTaskStatus, RedTaskStatusAdmin)
 admin.site.register(RedTask, RedTaskAdmin)
+admin.site.register(RedTaskJournalEntry, RedTaskJournalEntryAdmin)

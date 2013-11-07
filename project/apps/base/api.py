@@ -179,6 +179,56 @@ class ProjectResource(ModelResource):
 
 
 
+class ActivityResource(Resource):
+   
+    class Meta:
+        
+        resource_name = 'activity'
+        include_resource_uri = False 
+        # cache = SimpleCache(timeout=10) 
+        # authentication = BasicAuthentication() 
+
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/(?P<slug>\w[\w/-]*)%s$" \
+                % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_activity'), name="api_get_activity"),
+        ]
+
+
+    def get_activity(self, request, **kwargs):
+
+        responce = []
+
+        if kwargs['slug'] == 'all':
+            tasks = RedTask.objects.all()
+
+            for task in tasks:
+
+                if task.redtaskjournalentry_set.all():
+                    for journal in task.redtaskjournalentry_set.all():
+                        journal_dict = { 'user': journal.user,
+                                          'task': task,
+                                          'status': journal.status,
+                                          'date': journal.created_on }
+                        responce.append(journal_dict)
+
+                else:
+                    journal_dict = { 'user': task.author,
+                                      'task': task,
+                                      'status': task.status,
+                                      'date': task.updated_on }
+                    responce.append(journal_dict)                    
+
+        responce = sorted(responce, key=lambda k: k['date'], reverse=True) 
+
+
+
+        return self.create_response(request, responce)
+
+
+
+
 class TimeResource(Resource):
    
     class Meta:
