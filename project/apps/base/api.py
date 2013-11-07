@@ -1,8 +1,8 @@
 
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
-from tastypie.cache import SimpleCache
 from tastypie.utils import trailing_slash
+# from tastypie.cache import SimpleCache
 # from tastypie.authentication import BasicAuthentication
 from django.conf.urls import url
 

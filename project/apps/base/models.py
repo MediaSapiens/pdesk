@@ -75,7 +75,6 @@ class RedUser(models.Model):
         return self.username
 
 
-
     def estimated_sum(self, limit=None):
 
         tasks = []
@@ -89,7 +88,6 @@ class RedUser(models.Model):
             if task.estimated_hours:                             
                 estimated_sum += task.estimated_hours
         return estimated_sum
-
 
 
     def spent_sum(self, limit=None):  
@@ -134,7 +132,6 @@ class RedProject(models.Model):
         else:            
             tasks = self.redtask_set.all()
 
-
         estimated_sum = 0.0
         for task in tasks:                      
             if task.estimated_hours:                             
@@ -149,7 +146,6 @@ class RedProject(models.Model):
             tasks = user_limit(self, limit, tasks)
         else:            
             tasks = self.redtask_set.all()
-
 
         spent_sum = 0.0
         for task in tasks:
@@ -205,11 +201,20 @@ class RedVersion(models.Model):
 
 
 
+class RedTaskStatus(models.Model):
+        
+    title = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return self.title
+
+
 class RedTask(models.Model):    
 
     title = models.CharField(max_length=500)
     project = models.ForeignKey(RedProject)
     version = models.ForeignKey(RedVersion, blank=True, null=True)
+    status = models.ForeignKey(RedTaskStatus)
 
     author = models.ForeignKey(RedUser, related_name = 'author')
     assigned_to = models.ForeignKey(RedUser, related_name = 'assigned_to', blank=True, null=True)

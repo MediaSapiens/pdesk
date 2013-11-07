@@ -3,7 +3,7 @@ from redmine import Redmine
 
 from django.http import HttpResponse
 from project.settings import REDMINE_HOST, REDMINE_USER, REDMINE_PASS
-from project.apps.base.models import RedProject, RedVersion, RedTask
+from project.apps.base.models import RedProject, RedVersion, RedTaskStatus, RedTask
 from project.apps.base.models import RedUser, RedRole, RedRoleSet
 
 
@@ -17,8 +17,6 @@ def update_db(request):
         usr = RedUser(id=user.id, username=user.login, email=user.mail,
             lastname=user.lastname, firstname=user.firstname)
         usr.save()
-        print usr, 'saved'
-
 
 
 # Fetch Roles
@@ -26,8 +24,13 @@ def update_db(request):
     for role in red_login.roles:
         rle = RedRole(id=role.id, title=role.name)
         rle.save()
-        print rle, 'saved'
 
+
+# Fetch Task statuses
+
+    for status in red_login.issue_statuses:
+        sts = RedTaskStatus(id=status.id, title=status.name)
+        sts.save()
 
 
 # Fetch Projects
@@ -37,7 +40,6 @@ def update_db(request):
         proj = RedProject(id=project.id, title=project.name)
         proj.save()
         print proj, 'saved'
-
 
 
     # Fetch members of project
@@ -74,6 +76,8 @@ def update_db(request):
         for issue in project.issues:
 
             author = RedUser.objects.get(id=issue.author.id)
+            status = RedTaskStatus.objects.get(id=issue.status.id)
+
             if issue.assigned_to:
                 assigned_to = RedUser.objects.get(id=issue.assigned_to.id)               
             else:
@@ -85,9 +89,10 @@ def update_db(request):
                 fixed_version = None
 
 
+
             iss = RedTask(id=issue.id, title=issue.subject, project=proj, estimated_hours=issue.estimated_hours, 
                 spent_hours=issue.get_spent_hours(), author=author, assigned_to=assigned_to, 
-                version=fixed_version, updated_on=issue.updated_on)
+                version=fixed_version, updated_on=issue.updated_on, status=status)
             iss.save()
             print iss, 'saved'
 
