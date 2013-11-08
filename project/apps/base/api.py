@@ -8,7 +8,7 @@ from django.conf.urls import url
 
 
 from project.apps.base.models import RedProject, RedVersion, RedTask
-from project.apps.base.models import RedUser, RedRole, RedRoleSet
+from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJournalEntry
 
 
 class UserResource(ModelResource):
@@ -199,10 +199,21 @@ class ActivityResource(Resource):
     def get_activity(self, request, **kwargs):
 
         responce = []
+        tasks = []
 
         if kwargs['slug'] == 'all':
-            tasks = RedTask.objects.all()
+            tasks = RedTask.objects.all()                 
 
+
+        elif kwargs['slug'] == 'project':
+
+            try:
+                project = RedProject.objects.get(id=request.GET['id'])
+                tasks = RedTask.objects.filter(project=project)
+            except RedProject.DoesNotExist:
+                pass
+
+        if tasks:
             for task in tasks:
 
                 if task.redtaskjournalentry_set.all():
@@ -218,13 +229,39 @@ class ActivityResource(Resource):
                                       'task': task,
                                       'status': task.status,
                                       'date': task.updated_on }
-                    responce.append(journal_dict)                    
+                    responce.append(journal_dict) 
+
+
+        elif kwargs['slug'] == 'user':
+
+            try:
+                user = RedUser.objects.get(id=request.GET['id'])
+
+                authors = RedTask.objects.filter(author=user)
+                for task in authors:
+                    journal_dict = { 'user': task.author,
+                                      'task': task,
+                                      'status': task.status,
+                                      'date': task.updated_on }
+                    responce.append(journal_dict)
+
+
+                others = RedTaskJournalEntry.objects.filter(user=user)
+                for journal in others:
+                    journal_dict = { 'user': journal.user,
+                                      'task': journal.task,
+                                      'status': journal.status,
+                                      'date': journal.created_on }
+                    responce.append(journal_dict)
+            except RedUser.DoesNotExist:
+                pass
+
+
 
         responce = sorted(responce, key=lambda k: k['date'], reverse=True) 
 
-
-
         return self.create_response(request, responce)
+
 
 
 
@@ -250,42 +287,46 @@ class TimeResource(Resource):
 
         responce = {}
 
-        if kwargs['obj_slug'] == 'project':        
-       
-            time = RedProject.objects.get(id=request.GET['id'])
+        if kwargs['obj_slug'] == 'project':
 
-            if kwargs['type_slug'] == 'spent':
-                if 'limit' in request.GET:
-                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
-                else:
-                    responce = {'spent_sum':time.spent_sum()}
+            try:       
+                time = RedProject.objects.get(id=request.GET['id'])
+
+                if kwargs['type_slug'] == 'spent':
+                    if 'limit' in request.GET:
+                        responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                    else:
+                        responce = {'spent_sum':time.spent_sum()}
 
 
 
-            elif kwargs['type_slug'] == 'estimate':
-                if 'limit' in request.GET:
-                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
-                else:
-                    responce = {'estimated_sum':time.estimated_sum()}  
-
+                elif kwargs['type_slug'] == 'estimate':
+                    if 'limit' in request.GET:
+                        responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                    else:
+                        responce = {'estimated_sum':time.estimated_sum()}  
+            except RedProject.DoesNotExist:
+                pass
 
 
         elif kwargs['obj_slug'] == 'user':
 
-            time = RedUser.objects.get(id=request.GET['id'])
+            try:
+                time = RedUser.objects.get(id=request.GET['id'])
 
-            if kwargs['type_slug'] == 'spent':
-                if 'limit' in request.GET:
-                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
-                else:
-                    responce = {'spent_sum':time.spent_sum()}                     
+                if kwargs['type_slug'] == 'spent':
+                    if 'limit' in request.GET:
+                        responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                    else:
+                        responce = {'spent_sum':time.spent_sum()}                     
 
-            elif kwargs['type_slug'] == 'estimate':
-                if 'limit' in request.GET:
-                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
-                else:
-                    responce = {'estimated_sum':time.estimated_sum()}  
-
+                elif kwargs['type_slug'] == 'estimate':
+                    if 'limit' in request.GET:
+                        responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                    else:
+                        responce = {'estimated_sum':time.estimated_sum()}  
+            except RedUser.DoesNotExist:
+                pass
 
 
         elif kwargs['obj_slug'] == 'all':
