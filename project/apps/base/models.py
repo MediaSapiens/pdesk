@@ -128,7 +128,7 @@ class RedProject(models.Model):
 
         tasks = []
         if limit:
-            tasks = user_limit(self, limit, tasks)
+            tasks = project_limit(self, limit, tasks)
         else:            
             tasks = self.redtask_set.all()
 
@@ -143,7 +143,7 @@ class RedProject(models.Model):
        
         tasks = []
         if limit:           
-            tasks = user_limit(self, limit, tasks)
+            tasks = project_limit(self, limit, tasks)
         else:            
             tasks = self.redtask_set.all()
 

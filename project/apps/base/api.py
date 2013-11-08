@@ -12,17 +12,16 @@ from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJourna
 
 
 class UserResource(ModelResource):
+
     class Meta:
         queryset = RedUser.objects.all()
         resource_name = 'user'
         filtering = {
                     'id': ALL,
                 }
-
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()
-
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
@@ -39,7 +38,6 @@ class RoleResource(ModelResource):
         filtering = {
                     'id': ALL,
                 }
-
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
 
@@ -60,7 +58,6 @@ class RoleSetResource(ModelResource):
 
         include_resource_uri = False   
         # cache = SimpleCache(timeout=10)
-
 
     def dehydrate_role(self, bundle):
         return bundle.obj.role.title  
@@ -131,17 +128,13 @@ class VersionResource(ModelResource):
                     'id': ALL,
                     'project': ALL_WITH_RELATIONS,
                     'tasks': ALL_WITH_RELATIONS,
-
                 }
-
         include_resource_uri = False 
         # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()               
 
-
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id   
-
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
@@ -164,12 +157,9 @@ class ProjectResource(ModelResource):
                     'id': ALL,
                     'roleset': ALL_WITH_RELATIONS,
                 }
-        # always_return_data = True
-
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
         # authentication = BasicAuthentication()
-
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
@@ -188,13 +178,11 @@ class ActivityResource(Resource):
         # cache = SimpleCache(timeout=10) 
         # authentication = BasicAuthentication() 
 
-
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<slug>\w[\w/-]*)%s$" \
                 % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_activity'), name="api_get_activity"),
         ]
-
 
     def get_activity(self, request, **kwargs):
 
@@ -202,11 +190,9 @@ class ActivityResource(Resource):
         tasks = []
 
         if kwargs['slug'] == 'all':
-            tasks = RedTask.objects.all()                 
-
+            tasks = RedTask.objects.all()
 
         elif kwargs['slug'] == 'project':
-
             try:
                 project = RedProject.objects.get(id=request.GET['id'])
                 tasks = RedTask.objects.filter(project=project)
@@ -233,7 +219,6 @@ class ActivityResource(Resource):
 
 
         elif kwargs['slug'] == 'user':
-
             try:
                 user = RedUser.objects.get(id=request.GET['id'])
 
@@ -245,7 +230,6 @@ class ActivityResource(Resource):
                                       'date': task.updated_on }
                     responce.append(journal_dict)
 
-
                 others = RedTaskJournalEntry.objects.filter(user=user)
                 for journal in others:
                     journal_dict = { 'user': journal.user,
@@ -256,13 +240,8 @@ class ActivityResource(Resource):
             except RedUser.DoesNotExist:
                 pass
 
-
-
         responce = sorted(responce, key=lambda k: k['date'], reverse=True) 
-
         return self.create_response(request, responce)
-
-
 
 
 
@@ -275,58 +254,44 @@ class TimeResource(Resource):
         # cache = SimpleCache(timeout=10) 
         # authentication = BasicAuthentication() 
 
-
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<type_slug>\w[\w/-]*)/(?P<obj_slug>\w[\w/-]*)%s$" \
                 % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_time'), name="api_get_time"),
         ]
 
-
     def get_time(self, request, **kwargs):
 
         responce = {}
+        time = None
 
         if kwargs['obj_slug'] == 'project':
 
             try:       
                 time = RedProject.objects.get(id=request.GET['id'])
-
-                if kwargs['type_slug'] == 'spent':
-                    if 'limit' in request.GET:
-                        responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
-                    else:
-                        responce = {'spent_sum':time.spent_sum()}
-
-
-
-                elif kwargs['type_slug'] == 'estimate':
-                    if 'limit' in request.GET:
-                        responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
-                    else:
-                        responce = {'estimated_sum':time.estimated_sum()}  
             except RedProject.DoesNotExist:
                 pass
-
 
         elif kwargs['obj_slug'] == 'user':
 
             try:
                 time = RedUser.objects.get(id=request.GET['id'])
-
-                if kwargs['type_slug'] == 'spent':
-                    if 'limit' in request.GET:
-                        responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
-                    else:
-                        responce = {'spent_sum':time.spent_sum()}                     
-
-                elif kwargs['type_slug'] == 'estimate':
-                    if 'limit' in request.GET:
-                        responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
-                    else:
-                        responce = {'estimated_sum':time.estimated_sum()}  
             except RedUser.DoesNotExist:
                 pass
+
+
+        if time:
+            if kwargs['type_slug'] == 'spent':
+                if 'limit' in request.GET:
+                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'spent_sum':time.spent_sum()}                     
+
+            elif kwargs['type_slug'] == 'estimate':
+                if 'limit' in request.GET:
+                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                else:
+                    responce = {'estimated_sum':time.estimated_sum()}  
 
 
         elif kwargs['obj_slug'] == 'all':
