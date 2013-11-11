@@ -2,7 +2,8 @@
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.utils import trailing_slash
-# from tastypie.cache import SimpleCache
+# from tastypie.cache import NoCache
+# SimpleCache,
 # from tastypie.authentication import BasicAuthentication
 from django.conf.urls import url
 
@@ -172,29 +173,24 @@ class ProjectResource(ModelResource):
 class ActivityResource(Resource):
    
     class Meta:
-        
         resource_name = 'activity'
-        include_resource_uri = False 
+        include_resource_uri = False
+        max_limit = 20 
         # cache = SimpleCache(timeout=10) 
         # authentication = BasicAuthentication() 
 
-    def prepend_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/(?P<slug>\w[\w/-]*)%s$" \
-                % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_activity'), name="api_get_activity"),
-        ]
 
-    def get_activity(self, request, **kwargs):
+    def obj_get_list(self, bundle, **kwargs):
 
         responce = []
         tasks = []
 
-        if kwargs['slug'] == 'all':
+        if bundle.request.GET['type'] == 'all':
             tasks = RedTask.objects.all()
 
-        elif kwargs['slug'] == 'project':
+        elif bundle.request.GET['type'] == 'project':
             try:
-                project = RedProject.objects.get(id=request.GET['id'])
+                project = RedProject.objects.get(id=bundle.request.GET['id'])
                 tasks = RedTask.objects.filter(project=project)
             except RedProject.DoesNotExist:
                 pass
@@ -218,9 +214,9 @@ class ActivityResource(Resource):
                     responce.append(journal_dict) 
 
 
-        elif kwargs['slug'] == 'user':
+        elif bundle.request.GET['type'] == 'user':
             try:
-                user = RedUser.objects.get(id=request.GET['id'])
+                user = RedUser.objects.get(id=bundle.request.GET['id'])
 
                 authors = RedTask.objects.filter(author=user)
                 for task in authors:
@@ -241,7 +237,16 @@ class ActivityResource(Resource):
                 pass
 
         responce = sorted(responce, key=lambda k: k['date'], reverse=True) 
-        return self.create_response(request, responce)
+        return responce
+
+
+    def dehydrate(self, bundle):
+            bundle.data['user'] = bundle.obj['user']
+            bundle.data['task'] = bundle.obj['task']
+            bundle.data['status'] = bundle.obj['status']
+            bundle.data['date'] = bundle.obj['date']
+            return bundle
+
 
 
 
