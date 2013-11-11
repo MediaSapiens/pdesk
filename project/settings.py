@@ -174,7 +174,7 @@ REDMINE_PASS = ''
 # testypie
 
 API_LIMIT_PER_PAGE = 0
-
+TASTYPIE_DEFAULT_FORMATS = ['json']
 
 
 #Try local settings
