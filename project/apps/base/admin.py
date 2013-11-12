@@ -7,7 +7,7 @@ from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJourna
 
 class RedUserAdmin(admin.ModelAdmin):
     model = RedUser
-    list_display = ('id', 'firstname', 'lastname', 'username', 'email')
+    list_display = ('id', 'firstname', 'lastname', 'username', 'email', 'hours', 'tags')
 
 class RedRoleAdmin(admin.ModelAdmin):
     model = RedProject

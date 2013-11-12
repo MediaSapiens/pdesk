@@ -130,6 +130,7 @@ INSTALLED_APPS = (
 
     'redmine',
     'tastypie',
+    'tagging',
 
     
     'project.apps.base',

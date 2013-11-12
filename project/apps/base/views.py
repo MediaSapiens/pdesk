@@ -103,8 +103,7 @@ def update_db(request):
                             jrn = RedTaskJournalEntry(id=journal.id, task=iss, status=status, 
                                 user=user, created_on=journal.created_on)
                             jrn.save()
-                            print jrn, 'saved'
-
+                           
     return HttpResponse('Done')
 
 

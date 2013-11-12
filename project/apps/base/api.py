@@ -2,8 +2,7 @@
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.utils import trailing_slash
-# from tastypie.cache import NoCache
-# SimpleCache,
+# from tastypie.cache import SimpleCache,
 # from tastypie.authentication import BasicAuthentication
 from django.conf.urls import url
 
@@ -287,14 +286,14 @@ class TimeResource(Resource):
 
         if time:
             if kwargs['type_slug'] == 'spent':
-                if 'limit' in request.GET:
-                    responce = {'spent_sum':time.spent_sum(limit=request.GET['limit'])}  
+                if 'timelimit' in request.GET:
+                    responce = {'spent_sum':time.spent_sum(limit=request.GET['timelimit'])}  
                 else:
                     responce = {'spent_sum':time.spent_sum()}                     
 
             elif kwargs['type_slug'] == 'estimate':
-                if 'limit' in request.GET:
-                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['limit'])}  
+                if 'timelimit' in request.GET:
+                    responce = {'estimated_sum':time.estimated_sum(limit=request.GET['timelimit'])}  
                 else:
                     responce = {'estimated_sum':time.estimated_sum()}  
 
@@ -307,9 +306,9 @@ class TimeResource(Resource):
             if kwargs['type_slug'] == 'spent':                
                 spent_sum = 0.0
                 for obj in time:
-                    if 'limit' in request.GET:                              
-                        if obj.spent_sum(limit=request.GET['limit']):              
-                            spent_sum += obj.spent_sum(limit=request.GET['limit'])                            
+                    if 'timelimit' in request.GET:                              
+                        if obj.spent_sum(limit=request.GET['timelimit']):              
+                            spent_sum += obj.spent_sum(limit=request.GET['timelimit'])                            
                     else: 
                         if obj.spent_sum():                                         
                             spent_sum += obj.spent_sum()
@@ -318,9 +317,9 @@ class TimeResource(Resource):
             elif kwargs['type_slug'] == 'estimate':
                 estimated_sum = 0.0
                 for obj in time:
-                    if 'limit' in request.GET:                              
-                        if obj.estimated_sum(limit=request.GET['limit']):              
-                            estimated_sum += obj.estimated_sum(limit=request.GET['limit'])                            
+                    if 'timelimit' in request.GET:                              
+                        if obj.estimated_sum(limit=request.GET['timelimit']):              
+                            estimated_sum += obj.estimated_sum(limit=request.GET['timelimit'])                            
                     else: 
                         if obj.estimated_sum():
                             estimated_sum += obj.estimated_sum()

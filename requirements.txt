@@ -8,7 +8,7 @@ Markdown==2.3.1    # Markdown support for the browsable API.
 django-filter==0.7 # Filtering support
 #pyredmine==0.2.4   # redmine api wrapper
 -e git+https://github.com/autogestion/pyredminews.git#egg=pyredmine
-
+-e git+https://github.com/svetlyak40wt/django-tagging-ng.git#egg=django-tagging-ng
 
 python-mimeparse==0.1.4
 python-dateutil==2.1
