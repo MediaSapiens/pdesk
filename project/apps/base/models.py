@@ -3,8 +3,8 @@ from dateutil.relativedelta import relativedelta
 
 from django.db import models
 import tagging
-from tagging.fields import TagField
-from tagging.models import Tag
+# from tagging.fields import TagField
+# from tagging.models import Tag
 
 def user_limit(self, limit, tasks):
     
@@ -72,14 +72,14 @@ class RedUser(models.Model):
 
     hours = models.FloatField(blank=True, null=True)
 
-    tags = TagField()
+    # tags = TagField()
 
 
-    def _get_tags(self):
-        return Tag.objects.get_for_object(self)
+    # def _get_tags(self):
+    #     return Tag.objects.get_for_object(self)
     
-    def _set_tags(self, tag_list):
-        Tag.objects.update_tags(self, tag_list)
+    # def _set_tags(self, tag_list):
+    #     Tag.objects.update_tags(self, tag_list)
 
 
     def __unicode__(self):
@@ -117,7 +117,7 @@ class RedUser(models.Model):
 
 
 # try:
-#     tagging.register(RedUser)
+tagging.register(RedUser)
 # except tagging.AlreadyRegistered:
 #     pass
 

@@ -1,13 +1,19 @@
 
 from django.contrib import admin
+from django.contrib.contenttypes import generic
 
 from project.apps.base.models import RedProject, RedVersion, RedTaskStatus, RedTask
 from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJournalEntry
+from tagging.models import TaggedItem
 
+
+class TagInline(generic.GenericTabularInline):
+    model = TaggedItem
 
 class RedUserAdmin(admin.ModelAdmin):
     model = RedUser
     list_display = ('id', 'firstname', 'lastname', 'username', 'email', 'hours', 'tags')
+    inlines = [TagInline]
 
 class RedRoleAdmin(admin.ModelAdmin):
     model = RedProject

@@ -6,18 +6,48 @@ from tastypie.utils import trailing_slash
 # from tastypie.authentication import BasicAuthentication
 from django.conf.urls import url
 
-
+from tagging.models import Tag
 from project.apps.base.models import RedProject, RedVersion, RedTask
 from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJournalEntry
 
 
+class TagResourse(ModelResource):
+
+    # users = fields.CharField()
+
+    class Meta:
+        queryset = Tag.objects.all()
+        resource_name = 'tag'
+        filtering = {
+                    'name': ALL, 
+                    'id': ALL,
+                }
+        include_resource_uri = False
+        # cache = SimpleCache(timeout=10)
+        # authentication = BasicAuthentication()
+
+    # def dehydrate_users(self, bundle):
+    #     users = []
+    #     for item in bundle.obj.items.all():
+    #         user = {
+    #                 "id":item.object.id,
+    #                 "name":item.object
+    #                 }
+    #         users.append(user)
+    #     return users
+
+
+
 class UserResource(ModelResource):
+
+    tag = fields.ToManyField(TagResourse, 'tags', full=True)
 
     class Meta:
         queryset = RedUser.objects.all()
         resource_name = 'user'
         filtering = {
                     'id': ALL,
+                    'tags': ALL_WITH_RELATIONS,
                 }
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)

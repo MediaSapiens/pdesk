@@ -7,8 +7,8 @@ admin.autodiscover()
 from project.apps.base.views import update_db
 
 from tastypie.api import Api
-from project.apps.base.api import UserResource, ProjectResource, VersionResource, TaskResource
-from project.apps.base.api import TimeResource, ActivityResource
+from project.apps.base.api import (UserResource, ProjectResource, VersionResource, 
+    TaskResource, TimeResource, ActivityResource, TagResourse)
 
 v1_api = Api(api_name='api')
 v1_api.register(UserResource())
@@ -17,7 +17,7 @@ v1_api.register(VersionResource())
 v1_api.register(TaskResource())
 v1_api.register(ActivityResource())
 v1_api.register(TimeResource())
-
+v1_api.register(TagResourse())
 
 urlpatterns = patterns('',
     # Examples:
