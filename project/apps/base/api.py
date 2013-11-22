@@ -3,7 +3,7 @@ from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 from tastypie.utils import trailing_slash
 # from tastypie.cache import SimpleCache,
-# from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import BasicAuthentication
 from django.conf.urls import url
 
 from tagging.models import Tag
@@ -24,23 +24,12 @@ class TagResourse(ModelResource):
                 }
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
-        # authentication = BasicAuthentication()
-
-    # def dehydrate_users(self, bundle):
-    #     users = []
-    #     for item in bundle.obj.items.all():
-    #         user = {
-    #                 "id":item.object.id,
-    #                 "name":item.object
-    #                 }
-    #         users.append(user)
-    #     return users
-
+        authentication = BasicAuthentication()
 
 
 class UserResource(ModelResource):
 
-    tag = fields.ToManyField(TagResourse, 'tags', full=True)
+    tag = fields.ToManyField(TagResourse, 'tags', null=True, blank=True)
 
     class Meta:
         queryset = RedUser.objects.all()
@@ -51,7 +40,7 @@ class UserResource(ModelResource):
                 }
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
-        # authentication = BasicAuthentication()
+        authentication = BasicAuthentication()
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
@@ -114,7 +103,7 @@ class TaskResource(ModelResource):
 
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
-        # authentication = BasicAuthentication()
+        authentication = BasicAuthentication()
 
 
     def dehydrate_project(self, bundle):
@@ -161,7 +150,7 @@ class VersionResource(ModelResource):
                 }
         include_resource_uri = False 
         # cache = SimpleCache(timeout=10)
-        # authentication = BasicAuthentication()               
+        authentication = BasicAuthentication()               
 
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id   
@@ -189,7 +178,7 @@ class ProjectResource(ModelResource):
                 }
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
-        # authentication = BasicAuthentication()
+        authentication = BasicAuthentication()
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
@@ -206,27 +195,50 @@ class ActivityResource(Resource):
         include_resource_uri = False
         max_limit = 20 
         # cache = SimpleCache(timeout=10) 
-        # authentication = BasicAuthentication() 
+        authentication = BasicAuthentication() 
 
 
     def obj_get_list(self, bundle, **kwargs):
 
         responce = []
         tasks = []
+        projects = []
+
+        if bundle.request.user.is_superuser:    
+            user_perm = False            
+        else:
+            try:
+                user_perm = bundle.request.user.reduser                
+                rolesets = RedRoleSet.objects.filter(users=user_perm)
+                for role in rolesets:
+                    projects.append(role.project)                
+            except RedUser.DoesNotExist:
+                user_perm = False
+
 
         if bundle.request.GET['type'] == 'all':
-            tasks = RedTask.objects.all()
+            if user_perm:                
+                tasks = RedTask.objects.filter(project__in=projects)
+            else:
+                tasks = RedTask.objects.all()
+
 
         elif bundle.request.GET['type'] == 'project':
             try:
                 project = RedProject.objects.get(id=bundle.request.GET['id'])
-                tasks = RedTask.objects.filter(project=project)
+                if user_perm:                    
+                    if project in projects:
+                        tasks = RedTask.objects.filter(project=project)
+                    else:
+                        tasks = False
+                else:
+                    tasks = RedTask.objects.filter(project=project)                    
             except RedProject.DoesNotExist:
                 pass
 
+
         if tasks:
             for task in tasks:
-
                 if task.redtaskjournalentry_set.all():
                     for journal in task.redtaskjournalentry_set.all():
                         journal_dict = { 'user': journal.user,
@@ -246,7 +258,6 @@ class ActivityResource(Resource):
         elif bundle.request.GET['type'] == 'user':
             try:
                 user = RedUser.objects.get(id=bundle.request.GET['id'])
-
                 authors = RedTask.objects.filter(author=user)
                 for task in authors:
                     journal_dict = { 'user': task.author,
@@ -262,6 +273,7 @@ class ActivityResource(Resource):
                                       'status': journal.status,
                                       'date': journal.created_on }
                     responce.append(journal_dict)
+
             except RedUser.DoesNotExist:
                 pass
 
@@ -286,7 +298,7 @@ class TimeResource(Resource):
         resource_name = 'time'
         include_resource_uri = False 
         # cache = SimpleCache(timeout=10) 
-        # authentication = BasicAuthentication() 
+        authentication = BasicAuthentication() 
 
     def prepend_urls(self):
         return [

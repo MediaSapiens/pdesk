@@ -106,29 +106,3 @@ def update_db(request):
                            
     return HttpResponse('Done')
 
-
-"""
-
-"journals":[
-{"details":[{"name":"status_id","property":"attr","new_value":"2","old_value":"1"},
-{"name":"assigned_to_id","property":"attr","new_value":"1"},
-{"name":"done_ratio","property":"attr","new_value":"10","old_value":"0"}
-,{"name":"estimated_hours","property":"attr","new_value":"1"}],
-"created_on":"2013-11-07T12:50:18Z","id":5,"user":{"name":"Mikhail Kushchenko","id":3},"notes":""}]
-
-
-"journals":[
-    {"details":
-    [{"name":"1","property":"attachment","new_value":"((.png"},
-    {"name":"status_id","property":"attr","new_value":"3","old_value":"2"},
-    {"name":"assigned_to_id","property":"attr","new_value":"1","old_value":"3"}],
-    "created_on":"2013-11-06T11:16:59Z","id":3,"user":{"name":"Mikhail Kushchenko","id":3},"notes":"dsfdfsdfs"},
-
-    {"details":
-    [{"name":"status_id","property":"attr","new_value":"6","old_value":"3"},
-    {"name":"assigned_to_id","property":"attr","new_value":"4","old_value":"1"},
-    {"name":"done_ratio","property":"attr","new_value":"30","old_value":"0"}],
-    "created_on":"2013-11-06T11:18:58Z","id":4,"user":{"name":"Mikhail Kushchenko","id":3},"notes":"g"}
-    ],
-
-"""   

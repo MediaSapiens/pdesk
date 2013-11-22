@@ -12,7 +12,7 @@ class TagInline(generic.GenericTabularInline):
 
 class RedUserAdmin(admin.ModelAdmin):
     model = RedUser
-    list_display = ('id', 'firstname', 'lastname', 'username', 'email', 'hours', 'tags')
+    list_display = ('id', 'firstname', 'lastname', 'username', 'email', 'hours', 'tags', 'pdesk_user')
     inlines = [TagInline]
 
 class RedRoleAdmin(admin.ModelAdmin):
