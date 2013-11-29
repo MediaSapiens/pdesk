@@ -13,8 +13,6 @@ from project.apps.base.models import RedUser, RedRole, RedRoleSet, RedTaskJourna
 
 class TagResourse(ModelResource):
 
-    # users = fields.CharField()
-
     class Meta:
         queryset = Tag.objects.all()
         resource_name = 'tag'
@@ -106,6 +104,30 @@ class TaskResource(ModelResource):
         authentication = BasicAuthentication()
 
 
+    def get_object_list(self, request):
+
+        projects = []
+
+        if request.user.is_superuser:    
+            user_perm = False            
+        else:
+            try:
+                user_perm = request.user.reduser                
+                rolesets = RedRoleSet.objects.filter(users=user_perm)
+                for role in rolesets:
+                    projects.append(role.project)                
+            except RedUser.DoesNotExist:
+                user_perm = False
+
+
+        if user_perm:
+            tasks = RedTask.objects.filter(project__in=projects)
+        else:
+            tasks = RedTask.objects.all()
+
+        return tasks
+
+
     def dehydrate_project(self, bundle):
         return bundle.obj.project.id      
 
@@ -152,12 +174,35 @@ class VersionResource(ModelResource):
         # cache = SimpleCache(timeout=10)
         authentication = BasicAuthentication()               
 
-    def dehydrate_project(self, bundle):
-        return bundle.obj.project.id   
+
+    def get_object_list(self, request):
+
+        projects = []
+
+        if request.user.is_superuser:    
+            user_perm = False            
+        else:
+            try:
+                user_perm = request.user.reduser                
+                rolesets = RedRoleSet.objects.filter(users=user_perm)
+                for role in rolesets:
+                    projects.append(role.project)                
+            except RedUser.DoesNotExist:
+                user_perm = False
+
+
+        if user_perm:
+            versions = RedVersion.objects.filter(project__in=projects)
+        else:
+            versions = RedVersion.objects.all()
+
+        return versions
+
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()
             bundle.data['spent_sum'] = bundle.obj.spent_sum()
+            bundle.data['project'] = bundle.obj.project.id  
             return bundle
 
 
@@ -179,6 +224,28 @@ class ProjectResource(ModelResource):
         include_resource_uri = False
         # cache = SimpleCache(timeout=10)
         authentication = BasicAuthentication()
+
+
+    def get_object_list(self, request):
+
+        projects = []
+
+        if request.user.is_superuser:    
+            user_perm = False            
+        else:
+            try:
+                user_perm = request.user.reduser                
+                rolesets = RedRoleSet.objects.filter(users=user_perm)
+                for role in rolesets:
+                    projects.append(role.project)                
+            except RedUser.DoesNotExist:
+                user_perm = False
+
+        if not user_perm:
+            projects = RedProject.objects.all()
+
+        return projects
+
 
     def dehydrate(self, bundle):
             bundle.data['estimated_sum'] = bundle.obj.estimated_sum()

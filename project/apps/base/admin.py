@@ -55,3 +55,5 @@ admin.site.register(RedVersion, RedVersionAdmin)
 admin.site.register(RedTaskStatus, RedTaskStatusAdmin)
 admin.site.register(RedTask, RedTaskAdmin)
 admin.site.register(RedTaskJournalEntry, RedTaskJournalEntryAdmin)
+
+

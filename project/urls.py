@@ -10,26 +10,20 @@ from tastypie.api import Api
 from project.apps.base.api import (UserResource, ProjectResource, VersionResource, 
     TaskResource, TimeResource, ActivityResource, TagResourse)
 
-v1_api = Api(api_name='api')
-v1_api.register(UserResource())
-v1_api.register(ProjectResource())
-v1_api.register(VersionResource())
-v1_api.register(TaskResource())
-v1_api.register(ActivityResource())
-v1_api.register(TimeResource())
-v1_api.register(TagResourse())
+pdesk = Api(api_name='api')
+pdesk.register(UserResource())
+pdesk.register(ProjectResource())
+pdesk.register(VersionResource())
+pdesk.register(TaskResource())
+pdesk.register(ActivityResource())
+pdesk.register(TimeResource())
+pdesk.register(TagResourse())
 
 urlpatterns = patterns('',
     # Examples:
     url(r'^update_db/', update_db),
-    url(r'^', include(v1_api.urls)),
+    url(r'^', include(pdesk.urls)),
     url(r'^index/$', 'project.views.index', name='index'),
 
-    
-    
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
