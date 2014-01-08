@@ -19,96 +19,14 @@ http://127.0.0.1:8000/api/tag/ get all tags
 http://127.0.0.1:8000/api/tag/1/  get tag with id 1
 
 
-responce:
-{
-"id": 1, 
-"email": "sfelde@mediasapiens.co", 
-"firstname": "Sergej", 
-"lastname": "Felde", 
-"username": "sfelde"
-"hours": null, 
-}
-
-
 2 )projects
 
 http://127.0.0.1:8000/api/project/    get all projects
 http://127.0.0.1:8000/api/project/2/ get project with id 2
 
-responce:
-{
-"estimated_sum": 14.0,  
-"id": 2,  
-"roleset": [
-    {
-        "id": 6,  
-        "role": "Developer",  
-        "users": [{
-                "email": "petr@petr.com",  
-                "firstname": "petr",  
-                "hours": null,  
-                "id": 4,  
-                "lastname": "petr",
-                 "username": "petr"
-            }]
-    },
-     {
-        "id": 7,  
-        "role": "Manager",
-         "users": [{
-                "email": "mikhail.kushchenko@mediasapiens.co",  
-                "firstname": "Mikhail",  
-                "hours": null,  
-                "id": 3,  
-                "lastname": "Kushchenko",  
-                "username": "mikhail.kushchenko"
-            }, {
-                "email": "sfelde@mediasapiens.co",  
-                "firstname": "Sergej",  
-                "hours": null,
-                 "id": 1,  
-                "lastname": "Felde",  
-                "username": "sfelde"
-            }]
-    }],  
-"spent_sum": 6.0,  
-"title": "plandesk",  
-"versions": [
-    {
-        "id": 1,  
-        "tasks": [{
-            "assigned_to": null,
-             "author": 3,  
-            "estimated_hours": 4.0,  
-            "id": 5,  
-            "spent_hours": 0.0,  
-            "title": "??"
-        }, {
-            "assigned_to": null,  
-            "author": 3,
-             "estimated_hours": 4.0,
-             "id": 6,  
-            "spent_hours": 2.0,
-             "title": "hhhh"
-        }],  
-        "title": "2"}]
-}
-
-
 
 http://127.0.0.1:8000/api/task/ get all tasks
 http://127.0.0.1:8000/api/task/4/ get  task with id 4
-
-responce:
-{
-"assigned_to": 3,
- "author": 3, 
-"estimated_hours": "1.0", 
-"spent_hours": null, 
-"id": 4, 
-"project": 2, 
-"title": "j"
-}
 
 
 http://127.0.0.1:8000/api/task/set/1;3;4/ get tasks with id 1;3;4
