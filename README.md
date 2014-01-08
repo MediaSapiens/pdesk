@@ -42,7 +42,6 @@ http://127.0.0.1:8000/api/version/?project__id=2  get roadmaps for project with 
 http://127.0.0.1:8000/api/task/?version__id=1 get tasks for roadmap with id 1
 
 
-
 4) activity
 
 http://127.0.0.1:8000/api/activity/?type=all  get all activity
